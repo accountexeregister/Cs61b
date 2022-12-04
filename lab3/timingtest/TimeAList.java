@@ -27,9 +27,9 @@ public class TimeAList {
         AList<Integer> ns = new AList<>();
         AList<Double> times = new AList<>();
         AList<Integer> opCounts = new AList<>();
-        Stopwatch s = new Stopwatch();
         for (int n = 1000; n <= 1000000; n *= 2) {
             ns.addLast(n);
+            Stopwatch s = new Stopwatch();
             int ops = generateList(n);
             times.addLast(s.elapsedTime());
             opCounts.addLast(ops);
