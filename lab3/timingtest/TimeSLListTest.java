@@ -10,7 +10,7 @@ public class TimeSLListTest {
 
     @Test
     public void testGenerateSLListGetLastOps() {
-        int expectedOps = 1000;
+        int expectedOps = 10000;
         SLList<Integer> list1 = TimeSLList.generateSLList(1000);
         int actualOps1 = TimeSLList.countGetLastOps(list1);
         assertEquals(expectedOps, actualOps1);
