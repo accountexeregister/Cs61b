@@ -32,7 +32,8 @@ public class TimeSLList {
             SLList<Integer> currentList = generateSLList(n);
             Stopwatch s = new Stopwatch();
             int ops = countGetLastOps(currentList);
-            times.addLast(s.elapsedTime());
+            double elapsedTime = s.elapsedTime();
+            times.addLast(elapsedTime);
             opCounts.addLast(ops);
         }
         printTimingTable(ns, times, opCounts);
