@@ -1,7 +1,5 @@
 package gitlet;
 
-import org.junit.Test;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -79,18 +77,40 @@ public class Repository {
         }
     }
 
-    private void changeCurrentBranch() {
+    public static void deleteFiles() {
+        File text1 = Utils.join(CWD, "text1.txt");
+        File text2 = Utils.join(CWD, "text2.txt");
+        try {
+            text1.createNewFile();
+            text2.createNewFile();
+        } catch (IOException e) {
+            System.exit(0);
+        }
+        deleteFile(CWD);
+    }
 
+    private static void deleteFile(File file) {
+        File[] fileList = file.listFiles();
+        if (fileList != null && fileList.length > 0) {
+            for (File subFile : fileList) {
+                deleteFile(subFile);
+            }
+        }
+        if (!file.equals(CWD)) {
+            file.delete();
+        }
     }
 
     private static String commitToSHA1(Commit commit) {
         return Utils.sha1(commit.toString());
     }
 
+    /*
     @Test
     public void convertCommitToSHA1() {
         Commit commit = new Commit("test");
         String commitSHA1 = Utils.sha1(commit.toString());
         System.out.println(commitSHA1);
     }
+     */
 }
