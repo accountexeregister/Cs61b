@@ -22,7 +22,6 @@ public class Repository {
      * comment above them describing what that variable represents and how that
      * variable is used. We've provided two examples for you.
      */
-
     /**
      * The current working directory.
      */
@@ -57,12 +56,41 @@ public class Repository {
             System.exit(0);
         }
         createCommitDirectory(initCommit);
-        Utils.writeContents(mainBranch, commitToSHA1(initCommit));
+        Utils.writeContents(mainBranch, initCommit.toSHA1());
         Utils.writeContents(HEAD, Utils.readContentsAsString(mainBranch));
     }
 
+    public static void log() {
+        Commit headCommit = getHeadCommit();
+        Commit currentCommit = headCommit;
+        while (currentCommit != null) {
+            System.out.println("===");
+            System.out.println("commit " + currentCommit.toSHA1());
+            System.out.println("Date: " + currentCommit.getDate());
+            System.out.println(currentCommit.getMessage());
+            System.out.println();
+            currentCommit = getCommit(currentCommit.getParent());
+        }
+    }
+
+    // Returns commit object based on SHA1 commit
+    private static Commit getCommit(String commitSHA1) {
+        if (commitSHA1 == null) {
+            return null;
+        }
+        String firstTwoCharOfCommitID = commitSHA1.substring(0, 2);
+        String restOfCommitID = commitSHA1.substring(2);
+        File firstTwoCharComIdDir = Utils.join(OBJECTS, firstTwoCharOfCommitID);
+        File restOfComIdFile = Utils.join(firstTwoCharComIdDir, restOfCommitID + ".txt");
+        return Utils.readObject(restOfComIdFile, Commit.class);
+    }
+
+    private static Commit getHeadCommit() {
+        return getCommit(Utils.readContentsAsString(HEAD));
+    }
+
     private static void createCommitDirectory(Commit commit) {
-        String commitSHA1 = commitToSHA1(commit);
+        String commitSHA1 = commit.toSHA1();
         String firstTwoCharOfCommitID = commitSHA1.substring(0, 2);
         String restOfCommitID = commitSHA1.substring(2);
         File firstTwoCharComIdDir = Utils.join(OBJECTS, firstTwoCharOfCommitID);
@@ -75,6 +103,7 @@ public class Repository {
         } catch (IOException e) {
             System.exit(0);
         }
+        Utils.writeObject(restOfComIdFile, commit);
     }
 
     public static void deleteFiles() {
@@ -93,16 +122,11 @@ public class Repository {
         }
     }
 
+    /*
     private static String commitToSHA1(Commit commit) {
         return Utils.sha1(commit.toString());
     }
-
-    /*
-    @Test
-    public void convertCommitToSHA1() {
-        Commit commit = new Commit("test");
-        String commitSHA1 = Utils.sha1(commit.toString());
-        System.out.println(commitSHA1);
-    }
      */
+
+
 }
