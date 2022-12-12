@@ -36,15 +36,9 @@ public class Commit implements Serializable {
     private List<String> fileList = new ArrayList<>();
 
     /* TODO: fill in the rest of this class. */
-    // This constructor must be called by commits after initial commit and not be called by initial commit
-    // Sets the date to the time this constructor was called, that is, when the commit is created
-    public Commit(String message) {
-        this.message = message;
-        // date = Calendar.getInstance();
-    }
 
     public void setNext(Commit nextCommitStaged) {
-        this.nextStagedCommit = nextCommitStaged.toSHA1();
+        this.nextStagedCommit = nextCommitStaged.toStatusSHA1();
     }
 
     public String getNextStagedCommitString() {
@@ -56,11 +50,10 @@ public class Commit implements Serializable {
     }
 
     // Creates the initial commit by creating initial commit message, setting date to epoch time and setting its parent to null
-    public Commit() {
-        this.message = "initial commit";
+    public Commit(String message) {
+        this.message = message;
         Calendar cal = Calendar.getInstance();
         cal.setTimeZone(TimeZone.getTimeZone("Asia/Calcutta"));
-        cal.setTimeInMillis(0);
         date = cal.getTime();
         parent = null;
     }
@@ -98,9 +91,22 @@ public class Commit implements Serializable {
         }
     }
 
+    public List<String> getFileList() {
+        return fileList;
+    }
+
+    public String getFileSHA1(String fileName) {
+        return fileToSHA1.get(fileName);
+    }
+
     // Factory method to create initial commit by calling private constructor Commit()
     public static Commit createInitCommit() {
-        return new Commit();
+        Commit commit = new Commit("initial commit");
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeZone(TimeZone.getTimeZone("Asia/Calcutta"));
+        cal.setTimeInMillis(0);
+        commit.date = cal.getTime();
+        return commit;
     }
 
     public String getDate() {
@@ -117,6 +123,10 @@ public class Commit implements Serializable {
     }
 
     public String toSHA1() {
-        return Utils.sha1(this.toString());
+        return Utils.sha1(this.date.toString() + this.message + this.fileList + this.fileToSHA1 + this.parent);
+    }
+
+    public String toStatusSHA1() {
+        return parent;
     }
 }

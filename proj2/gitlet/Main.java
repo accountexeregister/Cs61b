@@ -21,6 +21,11 @@ public class Main {
                 break;
             case "add":
                 // TODO: handle the `add [filename]` command
+                if (args.length < 2) {
+                    return;
+                }
+                String fileName = args[1];
+                Repository.add(fileName);
                 break;
             // TODO: FILL THE REST IN
             case "log":
