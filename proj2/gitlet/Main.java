@@ -28,6 +28,13 @@ public class Main {
                 Repository.add(fileName);
                 break;
             // TODO: FILL THE REST IN
+            case "commit":
+                if (args.length < 2) {
+                    return;
+                }
+                String message = args[1];
+                Repository.commit(message);
+                break;
             case "log":
                 Repository.log();
                 break;
