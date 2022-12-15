@@ -62,6 +62,13 @@ public class Commit implements Serializable {
         date = cal.getTime();
     }
 
+    public void resetStage() {
+        Commit nextStageCommit = new Commit();
+        nextStageCommit.setParent(this);
+        this.setNext(nextStageCommit);
+        nextStageCommit.setStage(this);
+    }
+
     public Commit getNextStagedCommit() {
         return Repository.getCommit(nextStagedCommit, STAGE);
     }
