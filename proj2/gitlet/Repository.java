@@ -41,6 +41,10 @@ public class Repository {
 
     /* TODO: fill in the rest of this class. */
     public static void initGitlet() {
+        if (GITLET_DIR.exists()) {
+            System.out.println("A Gitlet version-control system already exists in the current directory.");
+            System.exit(0);
+        }
         GITLET_DIR.mkdir();
         STAGE.mkdir();
         // Commit initCommit = Commit.createInitCommit();
@@ -63,6 +67,11 @@ public class Repository {
     }
 
     public static void add(String fileName) {
+        File file = Utils.join(CWD, fileName);
+        if (!file.exists()) {
+            System.out.println("File does not exist.");
+            System.exit(0);
+        }
         Commit headCommit = getHeadCommit();
         headCommit.stageFile(fileName);
     }
@@ -70,6 +79,14 @@ public class Repository {
 
     public static void commit(String message) {
         Commit headCommit = getHeadCommit();
+        if (!headCommit.isStageExists()) {
+            System.out.println("No changes added to the commit.");
+            System.exit(0);
+        }
+        if (message.length() < 1) {
+            System.out.println("Please enter a commit message.");
+            System.exit(0);
+        }
         File headBranchFile = getHeadBranchFile();
         if (headCommit != null) {
             Commit headNextStagedCommit = headCommit.getNextStagedCommit();

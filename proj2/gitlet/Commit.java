@@ -36,6 +36,8 @@ public class Commit implements Serializable {
     private Map<String, String> fileToSHA1 = new HashMap<>();
     // List of files stored by the commit
     private List<String> fileList = new ArrayList<>();
+    // Checks if a file has been staged on this commit
+    private boolean stageExists = false;
 
     /* TODO: fill in the rest of this class. */
 
@@ -47,6 +49,10 @@ public class Commit implements Serializable {
         return nextStagedCommit;
     }
 
+    public boolean isStageExists() {
+        return stageExists;
+    }
+    
     public void setParent(Commit parent) {
         this.parent = parent.toSHA1();
     }
@@ -86,11 +92,10 @@ public class Commit implements Serializable {
                 nextStagedCommitObj.fileList.add(fileName);
             }
             nextStagedCommitObj.fileToSHA1.put(fileName, fileToAddSHA1);
+            stageExists = true;
         } else {
-            String originalSha1OfFile = fileToSHA1.get(fileName);
-            if (originalSha1OfFile == null || !(nextStagedCommitObj.fileToSHA1.get(fileName).equals(originalSha1OfFile))) {
-                nextStagedCommitObj.fileToSHA1.put(fileName, originalSha1OfFile);
-            }
+            nextStagedCommitObj.fileToSHA1.put(fileName, null);
+            stageExists = false;
         }
         Repository.writeCommit(nextStagedCommitObj, nextStagedCommitObj.toStatusSHA1(), Repository.STAGE);
     }
