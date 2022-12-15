@@ -34,8 +34,10 @@ public class Commit implements Serializable {
     private String nextStagedCommit;
     // Maps file name to its SHA1
     private Map<String, String> fileToSHA1 = new HashMap<>();
+    /*
     // List of files stored by the commit
     private List<String> fileList = new ArrayList<>();
+     */
     // Checks if a file has been staged on this commit
     private boolean stageExists = false;
 
@@ -71,7 +73,7 @@ public class Commit implements Serializable {
     public void stageForRemoval(String fileName) {
         getNextStagedCommit().fileToSHA1.put(fileName, null);
     }
-    
+
     public void setParent(Commit parent) {
         this.parent = parent.toSHA1();
     }
@@ -107,9 +109,6 @@ public class Commit implements Serializable {
         File fileToAdd = Utils.join(Repository.CWD, fileName);
         String fileToAddSHA1 = Utils.sha1(Utils.readContentsAsString(fileToAdd));
         if (isStageable(fileName, fileToAddSHA1)) {
-            if (fileToSHA1.get(fileName) == null) {
-                nextStagedCommitObj.fileList.add(fileName);
-            }
             nextStagedCommitObj.fileToSHA1.put(fileName, fileToAddSHA1);
             stageExists = true;
         } else {
@@ -122,15 +121,16 @@ public class Commit implements Serializable {
 
     // Sets the stage for the commit which is in staging mode (Must only be called for commit about to be commited next
     public void setStage(Commit parent) {
-        for (String fileName : parent.fileList) {
-            fileList.add(fileName);
+        for (String fileName : parent.fileToSHA1.keySet()) {
             fileToSHA1.put(fileName, parent.fileToSHA1.get(fileName));
         }
     }
 
+    /*
     public List<String> getFileList() {
         return fileList;
     }
+    */
 
     public File getFile(String fileName) {
         return new File(getFileSHA1(fileName));
@@ -169,10 +169,14 @@ public class Commit implements Serializable {
     }
 
     public String toSHA1() {
-        return Utils.sha1(this.date.toString() + this.message + this.fileList + this.fileToSHA1 + this.parent);
+        return Utils.sha1(this.date.toString() + this.message + this.fileToSHA1 + this.parent);
     }
 
     public String toStatusSHA1() {
         return parent;
+    }
+
+    public Set<String> getFileNames() {
+        return fileToSHA1.keySet();
     }
 }
