@@ -63,7 +63,9 @@ public class Commit implements Serializable {
     }
 
     public void unstage(String fileName) {
-        getNextStagedCommit().fileToSHA1.put(fileName, fileToSHA1.get(fileName));
+        Commit nextStagedCommit = getNextStagedCommit();
+        nextStagedCommit.fileToSHA1.put(fileName, fileToSHA1.get(fileName));
+        Repository.writeCommit(nextStagedCommit, nextStagedCommit.toStatusSHA1(), STAGE);
     }
 
     public boolean isTracked(String fileName) {
@@ -71,7 +73,11 @@ public class Commit implements Serializable {
     }
 
     public void stageForRemoval(String fileName) {
-        getNextStagedCommit().fileToSHA1.put(fileName, null);
+        Commit nextStagedCommit = getNextStagedCommit();
+        nextStagedCommit.fileToSHA1.put(fileName, null);
+        stageExists = true;
+        Repository.writeCommit(nextStagedCommit, nextStagedCommit.toStatusSHA1(), STAGE);
+        Repository.writeCommit(this, toSHA1(), Repository.OBJECTS);
     }
 
     public void setParent(Commit parent) {
