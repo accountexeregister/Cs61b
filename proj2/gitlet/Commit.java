@@ -7,6 +7,8 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static gitlet.Repository.STAGE;
+
 /**
  * Represents a gitlet commit object.
  *  TODO: It's a good idea to give a description here of what else this Class
@@ -61,7 +63,7 @@ public class Commit implements Serializable {
     }
 
     public Commit getNextStagedCommit() {
-        return Repository.getCommit(nextStagedCommit, Repository.STAGE);
+        return Repository.getCommit(nextStagedCommit, STAGE);
     }
 
     public boolean isStageable(String fileName, String fileToAddSHA1) {
@@ -83,6 +85,7 @@ public class Commit implements Serializable {
                 nextStagedCommitObj.fileToSHA1.put(fileName, originalSha1OfFile);
             }
         }
+        Repository.writeCommit(nextStagedCommitObj, nextStagedCommitObj.toStatusSHA1(), Repository.STAGE);
     }
 
     // Sets the stage for the commit which is in staging mode (Must only be called for commit about to be commited next
@@ -95,6 +98,10 @@ public class Commit implements Serializable {
 
     public List<String> getFileList() {
         return fileList;
+    }
+
+    public File getFile(String fileName) {
+        return new File(getFileSHA1(fileName));
     }
 
     public String getFileSHA1(String fileName) {
