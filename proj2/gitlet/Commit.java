@@ -52,7 +52,7 @@ public class Commit implements Serializable {
     public boolean isStageExists() {
         return stageExists;
     }
-    
+
     public void setParent(Commit parent) {
         this.parent = parent.toSHA1();
     }
@@ -114,6 +114,10 @@ public class Commit implements Serializable {
 
     public File getFile(String fileName) {
         return new File(getFileSHA1(fileName));
+    }
+
+    public boolean fileExists(String fileName) {
+        return getFileSHA1(fileName) != null;
     }
 
     public String getFileSHA1(String fileName) {
