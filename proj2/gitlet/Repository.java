@@ -211,8 +211,22 @@ public class Repository {
                 deleteFile(subFile);
             }
         }
+        if (!file.exists()) {
+            return;
+        }
         if (!file.equals(GITLET_DIR) && !file.equals(CWD)) {
             file.delete();
+        }
+    }
+
+    public static void rm(String fileName) {
+        Commit headCommit = getHeadCommit();
+        if (headCommit.isStagedForAddition(fileName)) {
+            headCommit.unstage(fileName);
+        }
+        if (headCommit.isTracked(fileName)) {
+            headCommit.stageForRemoval(fileName);
+            deleteFile(Utils.join(CWD, fileName));
         }
     }
 
