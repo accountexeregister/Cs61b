@@ -145,7 +145,7 @@ public class Repository {
                 continue;
             }
             if (Utils.join(CWD, fileName).exists()) {
-                if (headCommit.isTracked(fileName) && isNotStagedAfterModified(headCommit, fileName)) {
+                if (stageCommit.isTracked(fileName) && isNotStagedAfterModified(headCommit, fileName)) {
                     System.out.println(fileName + " (modified)");
                 }
             } else if (isNotStagedAfterRemoved(headCommit, fileName)) {
@@ -158,7 +158,7 @@ public class Repository {
             if (fileName.equals(".gitlet")) {
                 continue;
             }
-            if (Utils.join(CWD, fileName).exists() && !(headCommit.isTracked(fileName))) {
+            if (Utils.join(CWD, fileName).exists() && !(stageCommit.isTracked(fileName))) {
                 System.out.println(fileName);
             }
         }
@@ -176,7 +176,7 @@ public class Repository {
             return false;
         }
         String stagedCommitFileSHA1 = currentCommit.getNextStagedCommit().getFileSHA1(fileName);
-        return (stagedCommitFileSHA1 != null && !(Utils.join(CWD, fileName).exists())) || (currentCommit.isTracked(fileName) && !(Utils.join(CWD, fileName).exists()));
+        return (stagedCommitFileSHA1 != null && !(Utils.join(CWD, fileName).exists())) || (currentCommit.getNextStagedCommit().isTracked(fileName) && !(Utils.join(CWD, fileName).exists()));
     }
 
     private static boolean isHead(File branchFile) {
@@ -277,6 +277,7 @@ public class Repository {
         Commit headCommit = getHeadCommit();
         Commit currentCommit = headCommit;
         while (currentCommit != null) {
+            printCommitData(currentCommit);
             currentCommit = getCommit(currentCommit.getParent(), OBJECTS);
         }
     }
@@ -437,7 +438,7 @@ public class Repository {
             if (file.getName().equals(".gitlet")) {
                 continue;
             }
-            if (!headCommit.fileExists(file.getName()) && !branchCommit.fileExists(file.getName())) {
+            if (!headCommit.isTracked(file.getName()) && !branchCommit.fileExists(file.getName())) {
                 System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
                 System.exit(0);
             } else if (!branchCommit.fileExists(file.getName())) {
