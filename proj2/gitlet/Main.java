@@ -92,6 +92,8 @@ public class Main {
                 String branchNameDel = args[1];
                 Repository.rmBranch(branchNameDel);
                 break;
+            case "global-log":
+                Repository.globalLog();
         }
     }
 }
