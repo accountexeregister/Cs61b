@@ -31,7 +31,8 @@ public class Repository {
      * The .gitlet directory.
      */
     public static final File GITLET_DIR = join(CWD, ".gitlet");
-    public static final File STAGE = join(GITLET_DIR, "stage");
+    public static final File STAGEDIR = join(GITLET_DIR, "stage");
+    public static final File STAGE = Utils.join(STAGEDIR, "stage.txt");
     public static final File REFS = join(GITLET_DIR, "refs");
     public static final File REFS_HEADS = join(REFS, "heads");
     // File that stores which branch it is pointing at
@@ -48,7 +49,7 @@ public class Repository {
             System.exit(0);
         }
         GITLET_DIR.mkdir();
-        STAGE.mkdir();
+        STAGEDIR.mkdir();
         // Commit initCommit = Commit.createInitCommit();
         REFS.mkdir();
         REFS_HEADS.mkdir();
@@ -56,6 +57,7 @@ public class Repository {
         COMMITS.mkdir();
         try {
             HEAD.createNewFile();
+            STAGE.createNewFile();
         } catch (IOException e) {
             System.exit(0);
         }
@@ -501,6 +503,6 @@ public class Repository {
     public static void checkoutHead(String fileName) {
         checkout(getHeadCommitSHA1(), fileName);
     }
-    
+
 
 }
