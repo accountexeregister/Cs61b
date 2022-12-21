@@ -8,7 +8,7 @@ import java.util.Set;
 
 public class Stage implements Serializable {
     private Map<String, String> stageFileToSha1 = new HashMap<>();
-    private Map<String, String> stageRemoveFileToSha1 = new HashMap<>();
+    private Map<String, Boolean> stageRemoveFileToSha1 = new HashMap<>();
     private Map<String, String> tracks = new HashMap<>();
 
     public void stageFile(Commit headCommit, String fileName) {
@@ -29,7 +29,7 @@ public class Stage implements Serializable {
     }
 
     public boolean isStagedForRemoval(String fileName) {
-        return stageRemoveFileToSha1.get(fileName) != null;
+        return stageRemoveFileToSha1.get(fileName);
     }
 
     public void unstage(String fileName) {
@@ -38,7 +38,7 @@ public class Stage implements Serializable {
     }
 
     public void stageForRemoval(String fileName) {
-        stageRemoveFileToSha1.put(fileName, null);
+        stageRemoveFileToSha1.put(fileName, true);
         saveStage();
     }
 
@@ -50,6 +50,14 @@ public class Stage implements Serializable {
         return stageFileToSha1.keySet();
     }
 
+    public String getStagedForAdditionFileSHA1(String fileName) {
+        return stageFileToSha1.get(fileName);
+    }
+
+    public boolean getStagedForRemovalFileSHA1(String fileName) {
+        return stageRemoveFileToSha1.get(fileName);
+    }
+
     public Set<String> getStageForRemovalFileNames() {
         return stageRemoveFileToSha1.keySet();
     }
@@ -57,7 +65,7 @@ public class Stage implements Serializable {
     public boolean isStageExists(Commit headCommit) {
         return !stageFileToSha1.isEmpty() || !stageRemoveFileToSha1.isEmpty();
     }
-
+    
     public void saveStage() {
         Utils.writeObject(Repository.STAGE, this);
     }
