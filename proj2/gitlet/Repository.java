@@ -58,6 +58,8 @@ public class Repository {
         try {
             HEAD.createNewFile();
             STAGE.createNewFile();
+            Stage initialStage = new Stage();
+            initialStage.saveStage();
         } catch (IOException e) {
             System.exit(0);
         }
@@ -222,10 +224,14 @@ public class Repository {
         headCommit.stageFile(fileName);
     }
 
+    public static Stage getStage() {
+        return Utils.readObject(STAGE, Stage.class);
+    }
 
     public static void commit(String message) {
         Commit headCommit = getHeadCommit();
         File headBranchFile = getHeadBranchFile();
+        Stage stage = getStage();
         if (headCommit != null) {
             if (!headCommit.isStageExists()) {
                 System.out.println("No changes added to the commit.");
@@ -248,12 +254,6 @@ public class Repository {
             Commit initCommit = Commit.createInitCommit();
             headCommit = initCommit;
         }
-        createAndGetDirectoryAndFile(headCommit.toSHA1(), COMMITS);
-        Commit nextStagedCommit = new Commit();
-        nextStagedCommit.setParent(headCommit);
-        nextStagedCommit.setStage(headCommit);
-        headCommit.setNext(nextStagedCommit);
-        writeCommit(nextStagedCommit, nextStagedCommit.toStatusSHA1(), STAGE);
         writeCommit(headCommit, headCommit.toSHA1(), OBJECTS);
         writeCommit(headCommit, headCommit.toSHA1(), COMMITS);
         // Advance branch that is pointed by head
