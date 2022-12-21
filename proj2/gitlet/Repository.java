@@ -138,9 +138,10 @@ public class Repository {
             System.out.println(fileName);
         }
         System.out.println();
-        Set<String> cwdAndStageFileSet = new HashSet<>(stage.getStageForRemovalFileNames());
+        Set<String> cwdAndStageFileSet = new HashSet<>(headCommit.getFileNames());
         String[] cwdFileList = CWD.list();
         Collections.addAll(cwdAndStageFileSet, cwdFileList);
+        cwdAndStageFileSet.addAll(stage.getStageFileNames());
         List<String> cwdAndStageFileList = new ArrayList<>(cwdAndStageFileSet);
         Collections.sort(cwdAndStageFileList);
         System.out.println("=== Modifications Not Staged For Commit ===");
@@ -149,7 +150,7 @@ public class Repository {
                 continue;
             }
             if (Utils.join(CWD, fileName).exists()) {
-                if (stage.getStagedForAdditionFileSHA1(fileName) != null && isNotStagedAfterModified(headCommit, stage, fileName)) {
+                if (isNotStagedAfterModified(headCommit, stage, fileName)) {
                     System.out.println(fileName + " (modified)");
                 }
             } else if (isNotStagedAfterRemoved(headCommit, stage, fileName)) {
@@ -162,8 +163,12 @@ public class Repository {
             if (fileName.equals(".gitlet")) {
                 continue;
             }
-            if (Utils.join(CWD, fileName).exists() && !headCommit.isTracked(fileName) && !stage.isStagedForAddition(fileName)) {
-                System.out.println(fileName);
+            if (Utils.join(CWD, fileName).exists()) {
+                if (headCommit.isTracked(fileName) && (stage.isStagedForRemoval(fileName) != null)) {
+                    System.out.println(fileName);
+                } else if (!(headCommit.isTracked(fileName)) && !(stage.isStagedForAddition(fileName))) {
+                    System.out.println(fileName);
+                }
             }
         }
         System.out.println();
@@ -171,7 +176,16 @@ public class Repository {
 
     private static boolean isNotStagedAfterModified(Commit currentCommit, Stage stage, String fileName) {
         String cwdFileSHA1 = Utils.sha1(Utils.readContentsAsString(Utils.join(CWD, fileName)));
-        return stage.isStageable(currentCommit, fileName, cwdFileSHA1);
+        if (currentCommit.isTracked(fileName)) {
+            if (!(currentCommit.getFileSHA1(fileName).equals(cwdFileSHA1)) && !stage.isStagedForAddition(fileName)) {
+                return true;
+            }
+        }
+        if (stage.isStagedForAddition(fileName)) {
+            return !(stage.getStagedForAdditionFileSHA1(fileName).equals(cwdFileSHA1));
+        }
+        return false;
+
     }
 
     private static boolean isNotStagedAfterRemoved(Commit currentCommit, Stage stage, String fileName) {
@@ -417,11 +431,12 @@ public class Repository {
 
     public static void rm(String fileName) {
         Commit headCommit = getHeadCommit();
-        if (headCommit.isStagedForAddition(fileName)) {
-            headCommit.unstage(fileName);
+        Stage stage = getStage();
+        if (stage.isStagedForAddition(fileName)) {
+            stage.unstage(fileName);
         }
         if (headCommit.isTracked(fileName)) {
-            headCommit.stageForRemoval(fileName);
+            stage.stageForRemoval(fileName);
             deleteFile(Utils.join(CWD, fileName));
         }
     }
