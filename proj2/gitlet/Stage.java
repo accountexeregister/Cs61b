@@ -22,7 +22,7 @@ public class Stage implements Serializable {
         }
         saveStage();
     }
-    
+
 
     public void resetStage() {
         stageFileToSha1 = new HashMap<String, String>();
@@ -60,7 +60,7 @@ public class Stage implements Serializable {
         return stageFileToSha1.get(fileName);
     }
 
-    public boolean getStagedForRemovalFileSHA1(String fileName) {
+    public Boolean getStagedForRemovalFileSHA1(String fileName) {
         return stageRemoveFileToSha1.get(fileName);
     }
 
