@@ -151,9 +151,8 @@ public class Commit implements Serializable {
         return Repository.getCommit(nextStagedCommit, STAGE);
     }
 
-    public boolean isStageable(String fileName, String fileToAddSHA1) {
-        Commit stagedCommit = getNextStagedCommit();
-        return stagedCommit.fileToSHA1.get(fileName) == null || !(stagedCommit.fileToSHA1.get(fileName).equals(fileToAddSHA1));
+    public boolean isStageable(Stage stage, String fileName, String fileToAddSHA1) {
+        return stage.getStagedForAdditionFileSHA1(fileName) == null || !(stage.getStagedForAdditionFileSHA1(fileName).equals(fileToAddSHA1));
     }
 
     public void stageFile(String fileName) {
