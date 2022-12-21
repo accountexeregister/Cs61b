@@ -245,9 +245,9 @@ public class Repository {
             Commit nextCommit = new Commit();
             nextCommit.setParent(headCommit);
             headCommit.setNext(nextCommit);
+            nextCommit.addCommitDetail(message);
             nextCommit.addFilesFromStage(headCommit, stage);
             headCommit = nextCommit;
-            headCommit.addCommitDetail(message);
             createBlobs(headCommit);
             stage.resetStage();
         } else {
@@ -430,7 +430,7 @@ public class Repository {
     private static String getBranchCommitID(String branchFileName) {
         return Utils.readContentsAsString(Utils.join(REFS_HEADS, branchFileName));
     }
-
+    
     public static void checkout(String commitId, String fileName) {
         try {
             Commit checkedOutCommit = getCommit(commitId, OBJECTS);
