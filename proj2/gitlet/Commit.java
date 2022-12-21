@@ -52,7 +52,7 @@ public class Commit implements Serializable {
     public String getNextStagedCommitString() {
         return nextStagedCommit;
     }
-
+    
     public boolean isStageExists() {
         return stageExists;
     }
