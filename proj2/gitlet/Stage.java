@@ -22,6 +22,7 @@ public class Stage implements Serializable {
         }
         saveStage();
     }
+    
 
     public void resetStage() {
         stageFileToSha1 = new HashMap<String, String>();
