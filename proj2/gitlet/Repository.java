@@ -501,6 +501,6 @@ public class Repository {
     public static void checkoutHead(String fileName) {
         checkout(getHeadCommitSHA1(), fileName);
     }
-
+    
 
 }
