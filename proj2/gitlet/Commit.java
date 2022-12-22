@@ -6,8 +6,6 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static gitlet.Repository.STAGE;
-
 /**
  * Represents a gitlet commit object.
  *  TODO: It's a good idea to give a description here of what else this Class
@@ -30,14 +28,14 @@ public class Commit implements Serializable {
     private String message;
     private Date date;
     private String parent;
-    private String nextStagedCommit;
+    private String next;
     // Maps file name to its SHA1
     private Map<String, String> fileToSHA1 = new HashMap<>();
 
     /* TODO: fill in the rest of this class. */
 
-    public void setNext(Commit nextCommitStaged) {
-        this.nextStagedCommit = nextCommitStaged.toStatusSHA1();
+    public void setNext(Commit next) {
+        this.next = next.toSHA1();
     }
 
     public void addFilesFromStage(Commit parentCommit, Stage stage) {
@@ -83,10 +81,6 @@ public class Commit implements Serializable {
         date = cal.getTime();
     }
 
-    public Commit getNextStagedCommit() {
-        return Repository.getCommit(nextStagedCommit, STAGE);
-    }
-
     public boolean isStageable(Stage stage, String fileName, String fileToAddSHA1) {
         return stage.getStagedForAdditionFileSHA1(fileName) == null || !(stage.getStagedForAdditionFileSHA1(fileName).equals(fileToAddSHA1));
     }
@@ -126,11 +120,7 @@ public class Commit implements Serializable {
     public String toSHA1() {
         return Utils.sha1(this.date.toString() + this.message + this.fileToSHA1 + this.parent);
     }
-
-    public String toStatusSHA1() {
-        return parent;
-    }
-
+    
     public Set<String> getFileNames() {
         return fileToSHA1.keySet();
     }
