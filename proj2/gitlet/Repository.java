@@ -533,6 +533,7 @@ public class Repository {
         Commit headCommit = getHeadCommit();
         System.out.println(getSplitPoint(headCommit, branchCommit).getMessage());
     }
+    
 
     private static Commit getSplitPoint(Commit currentCommit, Commit givenCommit) {
         if (currentCommit == null || givenCommit == null) {
@@ -561,7 +562,7 @@ public class Repository {
 
         Commit a = getSplitPoint(currentCommitParentWithBranches, givenCommit);
         Commit b = getSplitPoint(currentCommit, givenCommitParentWithBranches);
-        
+
         if (a != null && b != null) {
             if (a.getBranchNumber() > b.getBranchNumber()) {
                 return a;
