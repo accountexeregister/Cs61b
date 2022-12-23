@@ -180,6 +180,10 @@ public class Commit implements Serializable {
         return this.toSHA1().equals(oCommit.toSHA1());
     }
 
+    public List<String> getNextCommits() {
+        return nextCommits;
+    }
+
     @Override
     public int hashCode() {
         return this.toSHA1().hashCode();
