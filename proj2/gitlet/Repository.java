@@ -1,7 +1,5 @@
 package gitlet;
 
-import org.junit.Test;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -556,6 +554,7 @@ public class Repository {
         checkout(getHeadCommitSHA1(), fileName);
     }
 
+    /*
     @Test
     public void testSplitPoint() {
         Commit initCommit = Commit.createInitCommit();
@@ -632,11 +631,15 @@ public class Repository {
         System.out.println(getSplitPoint(commit4, commit2).getMessage());
     }
 
+     */
+
     public static void merge(String givenBranchName) {
         String givenBranchCommitId = getBranchCommitID(givenBranchName + ".txt");
         Commit givenBranchCommit = getCommit(givenBranchCommitId, OBJECTS);
         Commit headCommit = getHeadCommit();
         Commit splitPoint = getSplitPoint(headCommit, givenBranchCommit);
+        String currentBranch = getHeadBranchFile().getName();
+        String currentBranchName = getBranchName(currentBranch);
         if (givenBranchCommit.equals(splitPoint)) {
             System.out.println("Given branch is an ancestor of the current branch.");
             return;
@@ -644,6 +647,7 @@ public class Repository {
 
         if (headCommit.equals(splitPoint)) {
             checkoutBranch(givenBranchName);
+            Utils.writeContents(Utils.join(REFS_HEADS, currentBranch), givenBranchCommitId);
             System.out.println("Current branch fast-forwarded.");
             return;
         }
@@ -655,8 +659,7 @@ public class Repository {
             }
         }
 
-        String currentBranch = getBranchName(getHeadBranchFile().getName());
-        String commitMessage = "Merged " + givenBranchName + " into " + currentBranch + ".";
+        String commitMessage = "Merged " + givenBranchName + " into " + currentBranchName + ".";
         commit(commitMessage, givenBranchCommit);
 
 

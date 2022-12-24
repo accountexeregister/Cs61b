@@ -108,6 +108,13 @@ public class Main {
                 String branchFileName = args[1];
                 Repository.getSplitPointMessage(branchFileName);
                 break;
+            case "merge":
+                if (args.length < 2) {
+                    return;
+                }
+                String givenBranchName = args[1];
+                Repository.merge(givenBranchName);
+                break;
         }
     }
 }
