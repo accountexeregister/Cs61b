@@ -184,6 +184,10 @@ public class Commit implements Serializable {
         return nextCommits;
     }
 
+    public List<String> getParents() {
+        return parents;
+    }
+    
     @Override
     public int hashCode() {
         return this.toSHA1().hashCode();

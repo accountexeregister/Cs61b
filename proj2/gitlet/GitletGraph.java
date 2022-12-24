@@ -16,6 +16,10 @@ public class GitletGraph {
         n = 0;
     }
 
+    public boolean containsKey(Commit c) {
+        return commitKeyInGraph.containsKey(c);
+    }
+
     public int getCommitKeyInGraph(Commit c) {
         return commitKeyInGraph.get(c);
     }
