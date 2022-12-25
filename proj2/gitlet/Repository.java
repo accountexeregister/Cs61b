@@ -296,7 +296,9 @@ public class Repository {
             Utils.writeObject(INITIAL_COMMIT, initCommit);
             headCommit = initCommit;
         }
-        
+
+        CommitIdTrie initialCommitIdTrie = getStartingComIdTrie();
+        initialCommitIdTrie.addCommitId(headCommit.toSHA1());
         writeCommit(headCommit, headCommit.toSHA1(), OBJECTS);
         writeCommit(headCommit, headCommit.toSHA1(), COMMITS);
         // Advance branch that is pointed by head
