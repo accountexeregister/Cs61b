@@ -321,7 +321,7 @@ public class Repository {
                 commitId = initialCommitIdTrie.searchCommitId(commitId);
             }
             commitToResetTo = getCommit(commitId, OBJECTS);
-        } catch (NullPointerException e) {
+        } catch (IllegalArgumentException e) {
             System.out.println("No commit with that id exists.");
             System.exit(0);
         }
@@ -510,7 +510,7 @@ public class Repository {
             }
             File currentFileInRepo = Utils.join(CWD, fileName);
             Utils.writeContents(currentFileInRepo, getBlobContents(checkedOutCommit, fileName));
-        } catch (NullPointerException e) {
+        } catch (IllegalArgumentException e) {
             System.out.println("No commit with that id exists.");
             System.exit(0);
         }
