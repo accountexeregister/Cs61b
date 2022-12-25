@@ -41,6 +41,7 @@ public class Repository {
     public static final File OBJECTS = Utils.join(GITLET_DIR, "objects");
     public static final File COMMITS = Utils.join(GITLET_DIR, "commits");
     public static final File INITIAL_COMMIT = Utils.join(GITLET_DIR, "initialcommit.txt");
+    public static final File COMMIT_ID_TRIE = Utils.join(GITLET_DIR, "commitidtrie.txt");
     public static final int SHA1_LENGTH = 40;
 
     /* TODO: fill in the rest of this class. */
@@ -60,6 +61,9 @@ public class Repository {
             INITIAL_COMMIT.createNewFile();
             HEAD.createNewFile();
             STAGE.createNewFile();
+            COMMIT_ID_TRIE.createNewFile();
+            CommitIdTrie initialCommitIdTrie = new CommitIdTrie();
+            initialCommitIdTrie.saveTrie();
             Stage initialStage = new Stage();
             initialStage.saveStage();
         } catch (IOException e) {
