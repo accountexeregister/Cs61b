@@ -1,11 +1,6 @@
 package gitlet;
 
-import org.junit.Test;
-
 import java.io.Serializable;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 public class CommitIdTrie implements Serializable {
     // How deep the CommitIdTrie is, starting from 0 as the top level, and the one below as 1, and so on, increasing by 1 every time the trie goes deeper
@@ -77,6 +72,7 @@ public class CommitIdTrie implements Serializable {
         }
     }
 
+    /*
     @Test
     public void testAddCommitId01() {
         String sampleCommitId = "a0da1ea5a15ab613bf9961fd86f010cf74c7ee48";
@@ -193,5 +189,7 @@ public class CommitIdTrie implements Serializable {
         commitIdTrie.addCommitId(sampleCommitId2);
         assertNull(commitIdTrie.searchCommitId("a0da1"));
     }
+
+     */
 
 }
