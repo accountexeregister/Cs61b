@@ -296,10 +296,15 @@ public class Repository {
             Utils.writeObject(INITIAL_COMMIT, initCommit);
             headCommit = initCommit;
         }
+        
         writeCommit(headCommit, headCommit.toSHA1(), OBJECTS);
         writeCommit(headCommit, headCommit.toSHA1(), COMMITS);
         // Advance branch that is pointed by head
         Utils.writeContents(headBranchFile, headCommit.toSHA1());
+    }
+
+    private static CommitIdTrie getStartingComIdTrie() {
+        return Utils.readObject(COMMIT_ID_TRIE, CommitIdTrie.class);
     }
 
     public static void commit(String message) {
