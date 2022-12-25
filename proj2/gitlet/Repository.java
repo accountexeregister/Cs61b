@@ -521,6 +521,7 @@ public class Repository {
     public static void checkoutBranch(String branchName) {
         String branchFileName = branchName + ".txt";
         File branchFile = Utils.join(REFS_HEADS, branchFileName);
+        Stage stage = getStage();
         if (!branchFile.exists()) {
             System.out.println("No such branch exists.");
             System.exit(0);
@@ -538,7 +539,9 @@ public class Repository {
             if (file.getName().equals(".gitlet")) {
                 continue;
             }
-            if (!headCommit.isTracked(file.getName()) && !branchCommit.fileExists(file.getName())) {
+            String cwdFileSHA1 = Utils.sha1(Utils.readContentsAsString(file));
+            if (headCommit.isStageable(stage, file.getName(), cwdFileSHA1) &&
+                    (!branchCommit.fileExists(file.getName()) || !(branchCommit.getFileSHA1(file.getName()).equals(cwdFileSHA1)))) {
                 System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
                 System.exit(0);
             } else if (!branchCommit.fileExists(file.getName())) {
@@ -568,7 +571,6 @@ public class Repository {
         for (File fileToDelete : filesToDelete) {
             fileToDelete.delete();
         }
-        Stage stage = getStage();
         stage.resetStage();
         Utils.writeContents(HEAD, branchName);
     }
