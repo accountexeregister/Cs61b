@@ -514,8 +514,8 @@ public class Repository {
             System.out.println("No commit with that id exists.");
             System.exit(0);
         }
-        Stage stage = getStage();
-        stage.resetStage();
+        // Stage stage = getStage();
+        // stage.resetStage();
     }
 
     private static boolean untrckedAndWillBeOverwritten(Commit headCommit, Commit commitToSwitchTo, Stage stage, File currentFile) {
@@ -734,7 +734,8 @@ public class Repository {
                 add(fileName);
             } else {
                 if (splitPoint.fileExists(fileName)) {
-                    if (isModifiedFromSplitPoint(givenBranchCommit, splitPoint, fileName) && !isModifiedFromSplitPoint(headCommit, splitPoint, fileName)) {
+                    if (headCommit.fileExists(fileName) && givenBranchCommit.fileExists(fileName) &&
+                            isModifiedFromSplitPoint(givenBranchCommit, splitPoint, fileName) && !isModifiedFromSplitPoint(headCommit, splitPoint, fileName)) {
                         printErrorUntrackedFile(headCommit, fileName);
                         checkout(givenBranchCommitId, fileName);
                         add(fileName);
@@ -762,7 +763,7 @@ public class Repository {
         String givenBranchCommitFileContent;
         String currentCommitFileSHA1 = currentCommit.getFileSHA1(fileName);
         if (currentCommitFileSHA1 == null) {
-            currentCommitFileContent = "\n";
+            currentCommitFileContent = "";
         } else {
             File currentCommitFile = getDirectoryAndFile(currentCommit.getFileSHA1(fileName), OBJECTS);
             currentCommitFileContent = Utils.readContentsAsString(currentCommitFile);
@@ -770,7 +771,7 @@ public class Repository {
 
         String givenBranchCommitFileSHA1 = givenBranchCommit.getFileSHA1(fileName);
         if (givenBranchCommitFileSHA1 == null) {
-            givenBranchCommitFileContent = "\n";
+            givenBranchCommitFileContent = "";
         } else {
             File givenBranchCommitFile = getDirectoryAndFile(givenBranchCommit.getFileSHA1(fileName), OBJECTS);
             givenBranchCommitFileContent = Utils.readContentsAsString(givenBranchCommitFile);
@@ -787,7 +788,7 @@ public class Repository {
 
         String header = "<<<<<<< HEAD\n";
         String separator = "=======\n";
-        String footer = ">>>>>>>";
+        String footer = ">>>>>>>\n";
         String fileNewContent = header + currentCommitFileContent + separator + givenBranchCommitFileContent + footer;
         Utils.writeContents(cwdFile, fileNewContent);
     }
@@ -844,10 +845,8 @@ public class Repository {
     private static boolean isModifiedFromSplitPoint(Commit commit, Commit splitPoint, String fileName) {
         String commitFileSHA1 = commit.getFileSHA1(fileName);
         String splitPointFileSHA1 = splitPoint.getFileSHA1(fileName);
-        if (commitFileSHA1 == null) {
-            return splitPointFileSHA1 != null;
-        }
-        return !commitFileSHA1.equals(splitPointFileSHA1);
+        return !splitPointFileSHA1.equals(commitFileSHA1);
+
     }
 
     public static void getSplitPointMessage(String branchName) {
